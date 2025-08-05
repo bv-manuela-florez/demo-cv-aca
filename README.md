@@ -9,10 +9,15 @@ Este proyecto implementa una API asíncrona con FastAPI para orquestar agentes i
 ```
 democv-foundry-multiagent-endpoint-async/
 │
-├── main.py                # API principal FastAPI, lógica de orquestación de
-├── requirements.txt       # Dependencias Python
-├── .env                   # Variables de entorno (Azure, agentes)
-└── README.md              # Este archivo
+├── main.py                      # API principal FastAPI, lógica de orquestación de agentes
+├── utils/
+│   ├── chat_history_models.py   # Modelos Pydantic para historial de chat y lógica de guardado en Cosmos DB
+│   ├── cosmos_utils_orm.py      # Utilidades ORM para Cosmos DB
+│   ├── keyvault.py              # Utilidades para Azure Key Vault
+│   └── telemetry.py             # Utilidades para telemetría y logging
+├── requirements.txt             # Dependencias Python
+├── .env                         # Variables de entorno (Azure, agentes)
+└── README.md                    # Este archivo
 ```
 
 ---
@@ -23,6 +28,19 @@ democv-foundry-multiagent-endpoint-async/
 - Utiliza Azure AI Projects para gestionar agentes y sus hilos de conversación.
 - Clasifica el mensaje usando un agente selector y redirige a agentes especializados (FAQ, Estado de Caso).
 - Responde de forma limpia, eliminando referencias técnicas y metadatos de la respuesta.
+
+---
+
+## 💾 Guardado de interacciones en Azure Cosmos DB
+
+- Cada interacción entre usuario y agente se guarda automáticamente en Cosmos DB.
+- El modelo `ConversationChat` (en `utils/chat_history_models.py`) estructura la sesión, incluyendo el mensaje del usuario, la respuesta del agente, uso de tokens, herramientas usadas, y metadatos de tiempo.
+- El guardado se realiza desde `main.py` usando los modelos definidos en `utils/chat_history_models.py`.
+
+**Ejemplo de flujo de guardado:**
+1. El usuario envía un mensaje al endpoint `/run-agent/`.
+2. El sistema orquesta la consulta y obtiene la respuesta del agente.
+3. Se construyen los modelos de historial de chat y se guarda la interacción en Cosmos DB.
 
 ---
 

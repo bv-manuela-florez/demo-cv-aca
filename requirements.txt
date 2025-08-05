@@ -3,3 +3,8 @@ uvicorn
 azure-identity
 azure-ai-projects
 python-dotenv
+azure-cosmos
+opencensus
+opencensus-ext-azure
+opencensus-ext-fastapi
+azure-keyvault-secrets
